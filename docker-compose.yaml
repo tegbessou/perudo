@@ -68,7 +68,7 @@ services:
     networks:
       - web
     external_links:
-      - nginx-proxy:skeleton.docker
+      - nginx-proxy:perudo.docker
 
   quality-assurance:
     build: docker/quality-assurance
