@@ -2,12 +2,16 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
+        <link rel="icon" href="{{ asset('images/favicon.ico') }}" />
     </head>
     <body>
+        <a title="{{ 'app.title'|trans }}" href="{{ path('app_home') }}"  class="d-flex justify-content-center">
+            <img width="25%" alt="logo" src="{{ asset('images/logo_transparent.png') }}">
+        </a>
         {% block body %}{% endblock %}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}

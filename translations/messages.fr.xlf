@@ -2,9 +2,49 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="fr" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="app.home.message">
-                <source>app.home.message</source>
-                <target>Bienvenue sur le squelette!</target>
+            <trans-unit id="app.title">
+                <source>app.title</source>
+                <target>Perudo</target>
+            </trans-unit>
+            <trans-unit id="app.home.welcome_message">
+                <source>app.home.welcome_message</source>
+                <target>Prêt à jouer au Perudo ?</target>
+            </trans-unit>
+            <trans-unit id="app.home.play_button.label">
+                <source>app.home.play_button.label</source>
+                <target>Jouer</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.pseudo.label">
+                <source>app.new_game.pseudo.label</source>
+                <target>Pseudo</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.label">
+                <source>app.new_game.number_players.label</source>
+                <target>Nombre de joueurs</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.play.label">
+                <source>app.new_game.play.label</source>
+                <target>Jouer !!</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.value.two">
+                <source>app.new_game.number_players.value.two</source>
+                <target>2</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.value.three">
+                <source>app.new_game.number_players.value.three</source>
+                <target>3</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.value.four">
+                <source>app.new_game.number_players.value.four</source>
+                <target>4</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.value.five">
+                <source>app.new_game.number_players.value.five</source>
+                <target>5</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_players.value.six">
+                <source>app.new_game.number_players.value.six</source>
+                <target>6</target>
             </trans-unit>
         </body>
     </file>

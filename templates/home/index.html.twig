@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ 'app.home.message'|trans }}
+    <div class="d-flex flex-row justify-content-center">
+        <h1>{{ 'app.home.welcome_message'|trans }}</h1>
+    </div>
+    <div class="d-flex flex-row justify-content-center">
+        <a class="btn btn-primary btn-lg" title="{{ 'app.home.play_button.label'|trans }}" href="{{ path('app_game_new') }}">{{ 'app.home.play_button.label'|trans }}</a>
+    </div>
 {% endblock %}
