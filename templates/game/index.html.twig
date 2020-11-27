@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="d-flex flex-row justify-content-center">
+        <h2>Game de {{ game.creator }}</h2>
+    </div>
+    <div class="d-flex flex-row justify-content-center">
+        <div>
+            {% for player in game.players %}
+                <h4>{{ player.pseudo }}</h4>
+                {% if not player.isBot %}
+                    {% for dice in player.dices %}
+                        {{ dice }}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
