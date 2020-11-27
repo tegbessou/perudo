@@ -26,7 +26,7 @@ class RedisParamConverter implements ParamConverterInterface
 
         $request->attributes->set($configuration->getName(), unserialize($this->repository->find($uuid)));
 
-        return false;
+        return true;
     }
 
     public function supports(ParamConverter $configuration): bool
