@@ -184,7 +184,7 @@ composer-unused:
 ## Linter yaml
 yaml-linter:
 	@echo "\nRunning yaml linter...\e[0m"
-	@$(QUALITY_ASSURANCE) yaml-linter src/ config/ fixtures/ docker* --format=json
+	@$(QUALITY_ASSURANCE) yaml-linter src/ config/ fixtures/ docker* --format=json --parse-tags
 
 ## Linter xliff
 xliff-linter:

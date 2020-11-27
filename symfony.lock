@@ -231,6 +231,18 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "snc/redis-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "85bbdb3d2db531e20874de29bab0587f93604fa8"
+        },
+        "files": [
+            "config/packages/snc_redis.yaml"
+        ]
+    },
     "symfony/asset": {
         "version": "v5.1.5"
     },
@@ -442,6 +454,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
+    "symfony/polyfill-uuid": {
+        "version": "v1.20.0"
+    },
     "symfony/process": {
         "version": "v5.1.5"
     },
@@ -548,6 +563,9 @@
     },
     "symfony/twig-pack": {
         "version": "v1.0.0"
+    },
+    "symfony/uid": {
+        "version": "v5.1.8"
     },
     "symfony/validator": {
         "version": "4.3",
