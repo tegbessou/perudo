@@ -10,7 +10,7 @@
                 <h4>{{ player.pseudo }}</h4>
                 {% if not player.isBot %}
                     {% for dice in player.dices %}
-                        {{ dice }}
+                        {% include '_component/dice.html.twig' with {'dice': dice, 'color': player.diceColor} %}
                     {% endfor %}
                 {% endif %}
             {% endfor %}

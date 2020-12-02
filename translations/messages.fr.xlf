@@ -18,32 +18,60 @@
                 <source>app.new_game.pseudo.label</source>
                 <target>Pseudo</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.label">
-                <source>app.new_game.number_players.label</source>
+            <trans-unit id="app.new_game.creator_color.label">
+                <source>app.new_game.creator_color.label</source>
+                <target>Couleur du joueur</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_of_players.label">
+                <source>app.new_game.number_of_players.label</source>
                 <target>Nombre de joueurs</target>
             </trans-unit>
             <trans-unit id="app.new_game.play.label">
                 <source>app.new_game.play.label</source>
                 <target>Jouer !!</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.value.two">
-                <source>app.new_game.number_players.value.two</source>
+            <trans-unit id="app.new_game.creator_color.value.red">
+                <source>app.new_game.creator_color.value.red</source>
+                <target>Rouge</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.creator_color.value.yellow">
+                <source>app.new_game.creator_color.value.yellow</source>
+                <target>Jaune</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.creator_color.value.orange">
+                <source>app.new_game.creator_color.value.orange</source>
+                <target>Orange</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.creator_color.value.purple">
+                <source>app.new_game.creator_color.value.purple</source>
+                <target>Violet</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.creator_color.value.green">
+                <source>app.new_game.creator_color.value.green</source>
+                <target>Vert</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.creator_color.value.blue">
+                <source>app.new_game.creator_color.value.blue</source>
+                <target>Bleu</target>
+            </trans-unit>
+            <trans-unit id="app.new_game.number_of_players.value.two">
+                <source>app.new_game.number_of_players.value.two</source>
                 <target>2</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.value.three">
-                <source>app.new_game.number_players.value.three</source>
+            <trans-unit id="app.new_game.number_of_players.value.three">
+                <source>app.new_game.number_of_players.value.three</source>
                 <target>3</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.value.four">
-                <source>app.new_game.number_players.value.four</source>
+            <trans-unit id="app.new_game.number_of_players.value.four">
+                <source>app.new_game.number_of_players.value.four</source>
                 <target>4</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.value.five">
-                <source>app.new_game.number_players.value.five</source>
+            <trans-unit id="app.new_game.number_of_players.value.five">
+                <source>app.new_game.number_of_players.value.five</source>
                 <target>5</target>
             </trans-unit>
-            <trans-unit id="app.new_game.number_players.value.six">
-                <source>app.new_game.number_players.value.six</source>
+            <trans-unit id="app.new_game.number_of_players.value.six">
+                <source>app.new_game.number_of_players.value.six</source>
                 <target>6</target>
             </trans-unit>
         </body>

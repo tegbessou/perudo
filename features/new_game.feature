@@ -7,10 +7,13 @@ Feature:
   Scenario: As a User I want to start a game
     Given I go to "/game/new"
     When I fill in "Pedro" for "game[creator]"
+    And I select "blue" from "game[creatorColor]"
     And I select "3" from "game[numberOfPlayers]"
     And I press "Jouer !!"
     Then the response status code should be 200
     And the response should contain "Game de Pedro"
+    And I should see 5 "i" elements
+    And the response should contain "dice-color-blue"
     And the response should contain "Pedro"
     And the response should contain "Bot 1"
 
@@ -18,11 +21,14 @@ Feature:
   Scenario: As a User I want to start a game with 5 player
     Given I go to "/game/new"
     When I fill in "Pedro" for "game[creator]"
+    And I select "green" from "game[creatorColor]"
     And I select "5" from "game[numberOfPlayers]"
     And I press "Jouer !!"
     Then the response status code should be 200
     And the response should contain "Game de Pedro"
     And the response should contain "Pedro"
+    And I should see 5 "i" elements
+    And the response should contain "dice-color-green"
     And the response should contain "Bot 1"
     And the response should contain "Bot 2"
     And the response should contain "Bot 3"

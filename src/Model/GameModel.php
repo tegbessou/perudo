@@ -9,6 +9,7 @@ class GameModel implements RedisStorageInterface
     use UuidTrait;
 
     private string $creator;
+    private string $creatorColor;
     private ?int $numberOfPlayers = 2;
     private array $players;
 
@@ -20,6 +21,18 @@ class GameModel implements RedisStorageInterface
     public function setCreator(string $creator): self
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    public function getCreatorColor(): string
+    {
+        return $this->creatorColor;
+    }
+
+    public function setCreatorColor(string $creatorColor): self
+    {
+        $this->creatorColor = $creatorColor;
 
         return $this;
     }
