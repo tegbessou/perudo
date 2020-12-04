@@ -12,9 +12,10 @@ class PlayerFactoryTest extends TestCase
     {
         $pseudo = 'test';
         $factory = new PlayerFactory();
-        $result = $factory->initialize($pseudo, false);
+        $result = $factory->initialize($pseudo, false, 'red');
         $this->assertInstanceOf(PlayerModel::class, $result);
         $this->assertEquals($pseudo, $result->getPseudo());
+        $this->assertEquals('red', $result->getDiceColor());
         $this->assertFalse($result->isBot());
     }
 }

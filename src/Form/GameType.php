@@ -23,17 +23,32 @@ class GameType extends AbstractType
                 ]
             )
             ->add(
+                'creatorColor',
+                ChoiceType::class,
+                [
+                    'choices' => [
+                        'app.new_game.creator_color.value.red' => 'red',
+                        'app.new_game.creator_color.value.blue' => 'blue',
+                        'app.new_game.creator_color.value.green' => 'green',
+                        'app.new_game.creator_color.value.yellow' => 'yellow',
+                        'app.new_game.creator_color.value.purple' => 'purple',
+                        'app.new_game.creator_color.value.orange' => 'orange',
+                    ],
+                    'label' => 'app.new_game.creator_color.label',
+                ]
+            )
+            ->add(
                 'numberOfPlayers',
                 ChoiceType::class,
                 [
                     'choices' => [
-                        'app.new_game.number_players.value.two' => 2,
-                        'app.new_game.number_players.value.three' => 3,
-                        'app.new_game.number_players.value.four' => 4,
-                        'app.new_game.number_players.value.five' => 5,
-                        'app.new_game.number_players.value.six' => 6,
+                        'app.new_game.number_of_players.value.two' => 2,
+                        'app.new_game.number_of_players.value.three' => 3,
+                        'app.new_game.number_of_players.value.four' => 4,
+                        'app.new_game.number_of_players.value.five' => 5,
+                        'app.new_game.number_of_players.value.six' => 6,
                     ],
-                    'label' => 'app.new_game.number_players.label',
+                    'label' => 'app.new_game.number_of_players.label',
                 ]
             )
             ->add(

@@ -8,9 +8,19 @@ class PlayerModel
 {
     use UuidTrait;
 
+    public const DICE_COLOR = [
+        'red',
+        'yellow',
+        'green',
+        'orange',
+        'pruple',
+        'blue',
+    ];
+
     private string $pseudo;
     private bool $bot;
     private int $numberOfDices;
+    private string $diceColor;
     private array $dices;
 
     public function getPseudo(): string
@@ -45,6 +55,18 @@ class PlayerModel
     public function setNumberOfDices(int $numberOfDices): self
     {
         $this->numberOfDices = $numberOfDices;
+
+        return $this;
+    }
+
+    public function getDiceColor(): string
+    {
+        return $this->diceColor;
+    }
+
+    public function setDiceColor(string $diceColor): self
+    {
+        $this->diceColor = $diceColor;
 
         return $this;
     }
