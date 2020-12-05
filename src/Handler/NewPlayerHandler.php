@@ -20,13 +20,14 @@ class NewPlayerHandler
     public function createBotPlayers(Game $game): Game
     {
         $index = 0;
+        $playerWhichStart = $this->whoStarting((int) $game->getNumberOfPlayers());
         while ($index < $game->getNumberOfPlayers() - 1) {
             $game->addPlayer($this->playerFactory->initialize(
                 $this->createBotPseudo($game->getPlayers()),
                 true,
-                $this->selectColor($game, $game->getPlayers())
+                $this->selectColor($game, $game->getPlayers()),
+                $index === $playerWhichStart ?? false
             ));
-            ++$index;
         }
 
         return $game;
@@ -70,5 +71,10 @@ class NewPlayerHandler
     private function getRandomColorInRemaining(): string
     {
         return $this->remainingColor[random_int((int) array_key_first($this->remainingColor), (int) array_key_last($this->remainingColor))];
+    }
+
+    private function whoStarting(int $numberOfPlayer): int
+    {
+        return random_int(0, $numberOfPlayer - 1);
     }
 }
