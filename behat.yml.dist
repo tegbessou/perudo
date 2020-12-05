@@ -5,6 +5,7 @@ default:
                 - App\Tests\Behat\FixtureContext
                 - App\Tests\Behat\ErrorHandlerContext
                 - Behat\MinkExtension\Context\MinkContext
+                - Behatch\Context\BrowserContext
 
     extensions:
         FriendsOfBehat\SymfonyExtension:
@@ -19,3 +20,4 @@ default:
                     selenium2:
                         wd_host: http://selenium:4444/wd/hub
                         browser: chrome
+        Behatch\Extension: ~

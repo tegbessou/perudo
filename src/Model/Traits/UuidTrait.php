@@ -2,11 +2,15 @@
 
 namespace App\Model\Traits;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV6;
 
 trait UuidTrait
 {
+    /**
+     * @ApiProperty(identifier=true)
+     */
     private UuidV6 $uuid;
 
     public function __construct()
