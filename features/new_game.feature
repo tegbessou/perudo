@@ -1,3 +1,4 @@
+@javascript
 Feature:
   In order to start a game
   As a User
@@ -10,26 +11,21 @@ Feature:
     And I select "blue" from "game[creatorColor]"
     And I select "3" from "game[numberOfPlayers]"
     And I press "Jouer !!"
-    Then the response status code should be 200
-    And the response should contain "Game de Pedro"
-    And I should see 5 "i" elements
-    And the response should contain "dice-color-blue"
-    And the response should contain "Pedro"
-    And the response should contain "Bot 1"
+    Then the response should contain "Game de Pedro"
+    And I wait 10 seconds until I see Pedro
+    And I wait 10 seconds until I see "Bot 1"
 
-  @read-only
+  @read-only @javascript
   Scenario: As a User I want to start a game with 5 player
     Given I go to "/game/new"
     When I fill in "Pedro" for "game[creator]"
     And I select "green" from "game[creatorColor]"
-    And I select "5" from "game[numberOfPlayers]"
+    And I select "6" from "game[numberOfPlayers]"
     And I press "Jouer !!"
-    Then the response status code should be 200
-    And the response should contain "Game de Pedro"
-    And the response should contain "Pedro"
-    And I should see 5 "i" elements
-    And the response should contain "dice-color-green"
-    And the response should contain "Bot 1"
-    And the response should contain "Bot 2"
-    And the response should contain "Bot 3"
-    And the response should contain "Bot 4"
+    Then the response should contain "Game de Pedro"
+    And I wait 10 seconds until I see Pedro
+    And I wait 10 seconds until I see "Bot 1"
+    And I wait 10 seconds until I see "Bot 2"
+    And I wait 10 seconds until I see "Bot 3"
+    And I wait 10 seconds until I see "Bot 4"
+    And I wait 10 seconds until I see "Bot 5"

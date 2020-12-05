@@ -2,8 +2,15 @@
 
 namespace App\Model;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Model\Traits\UuidTrait;
 
+/**
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"}
+ * )
+ */
 class GameModel implements RedisStorageInterface
 {
     use UuidTrait;

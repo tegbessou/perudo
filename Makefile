@@ -102,6 +102,16 @@ watch:
 assets-build:
 	@$(EXEC_YARN) encore dev
 
+env-test:
+	@echo "Switch to ${YELLOW}test${RESET}"
+	@-$(EXEC_PHP) bash -c 'grep APP_ENV= .env.local 1>/dev/null 2>&1 || echo -e "\nAPP_ENV=test" >> .env.local'
+	@-$(EXEC_PHP) sed -i 's/APP_ENV=.*/APP_ENV=test/g' .env.local
+
+env-dev:
+	@echo "Switch to ${YELLOW}dev${RESET}"
+	@-$(EXEC_PHP) bash -c 'grep APP_ENV= .env.local 1>/dev/null 2>&1 || echo -e "\nAPP_ENV=dev" >> .env.local'
+	@-$(EXEC_PHP) sed -i 's/APP_ENV=.*/APP_ENV=dev/g' .env.local
+
 .PHONY: install reset start stop vendor composer-update cc wait-db node-modules
 
 #################################
@@ -151,7 +161,7 @@ unit-test:
 	@$(EXEC_PHP) bin/phpunit
 
 ## Launch behat
-behat: vendor node-modules db-load-fixtures
+behat: env-test vendor node-modules db-load-fixtures
 	@echo "\nLaunching read-only behat tests...\e[0m"
 	@$(EXEC_PHP) vendor/bin/behat --strict --format=progress --tags="@read-only"
 
