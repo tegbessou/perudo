@@ -2,32 +2,29 @@
 
 namespace App\Manager;
 
-use App\Model\GameModel;
-use App\Repository\AbstractRepository;
+use App\Entity\Game;
+use App\Repository\GameRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GameManager
 {
-    private const TTL = 3600;
+    private GameRepository $repository;
+    private EntityManagerInterface $entityManager;
 
-    private AbstractRepository $repository;
-
-    public function __construct(AbstractRepository $repository)
+    public function __construct(EntityManagerInterface $entityManager, GameRepository $repository)
     {
         $this->repository = $repository;
+        $this->entityManager = $entityManager;
     }
 
-    public function create(GameModel $gameModel): void
+    public function create(Game $game): void
     {
-        $this->repository->save($gameModel->getUuid(), self::TTL, serialize($gameModel));
+        $this->entityManager->persist($game);
+        $this->entityManager->flush();
     }
 
-    public function get(string $uuid): GameModel
+    public function find(int $id): ?object
     {
-        return unserialize($this->repository->find($uuid));
-    }
-
-    public function delete(string $key): GameModel
-    {
-        return new GameModel();
+        return $this->repository->find($id);
     }
 }

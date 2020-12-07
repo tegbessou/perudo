@@ -6,9 +6,6 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $redis: '@snc_redis.default'
-    _instanceof:
-        App\Model\RedisStorageInterface:
-            tags: [ 'app.redis_storage' ]
 
     App\:
         resource: '../src/'
@@ -21,7 +18,3 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-
-    App\ParamConverter\RedisParamConverter:
-        arguments:
-            - !tagged_iterator app.redis_storage

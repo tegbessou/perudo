@@ -2,7 +2,8 @@
 
 namespace App\Handler;
 
-use App\Model\GameModel;
+use App\Entity\Game;
+use App\Entity\Player;
 
 class NewGameHandler
 {
@@ -13,8 +14,29 @@ class NewGameHandler
         $this->newPlayerHandler = $newPlayerHandler;
     }
 
-    public function assignPlayer(GameModel $gameModel): GameModel
+    public function setup(Game $game, string $creatorPseudo, string $creatorColor): void
     {
-        return $gameModel->setPlayers($this->newPlayerHandler->createPlayers($gameModel));
+        $player = $this->newPlayerHandler->createCreator(
+            $creatorPseudo,
+            $creatorColor
+        );
+        $this->assignPlayers($game, $player);
+    }
+
+    private function assignPlayers(Game $game, Player $player): void
+    {
+        $game->addPlayer($player);
+        $this->assignCreator($game, $player);
+        $this->assignBotPlayers($game);
+    }
+
+    private function assignCreator(Game $game, Player $player): void
+    {
+        $game->setCreator($player);
+    }
+
+    private function assignBotPlayers(Game $game): void
+    {
+        $this->newPlayerHandler->createBotPlayers($game);
     }
 }

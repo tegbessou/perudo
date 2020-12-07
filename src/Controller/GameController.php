@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Game;
 use App\Form\GameType;
 use App\Handler\NewGameHandler;
 use App\Manager\GameManager;
-use App\Model\GameModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,24 +18,25 @@ class GameController extends AbstractController
      */
     public function newAction(Request $request, NewGameHandler $newGameHandler, GameManager $gameManager): Response
     {
-        $game = new GameModel();
+        $game = new Game();
         $form = $this->createForm(GameType::class, $game);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $game = $newGameHandler->assignPlayer($game);
+            $newGameHandler->setup($game, $form->get('creator')->getData(), $form->get('creatorColor')->getData());
             $gameManager->create($game);
 
-            return $this->redirectToRoute('app_game_index', ['uuid' => $game->getUuid()]);
+            return $this->redirectToRoute('app_game_index', ['id' => $game->getId()]);
         }
 
         return $this->render('game/new.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * @Route("/game/{uuid}", name="app_game_index")
+     * @Route("/game/{id}", name="app_game_index")
      */
-    public function indexAction(GameModel $game): Response
+    public function indexAction(Game $game): Response
     {
         return $this->render('game/index.html.twig', ['game' => $game]);
     }

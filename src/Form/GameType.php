@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Model\GameModel;
+use App\Entity\Game;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,6 +20,7 @@ class GameType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'app.new_game.pseudo.label',
+                    'mapped' => false,
                 ]
             )
             ->add(
@@ -35,6 +36,7 @@ class GameType extends AbstractType
                         'app.new_game.creator_color.value.orange' => 'orange',
                     ],
                     'label' => 'app.new_game.creator_color.label',
+                    'mapped' => false,
                 ]
             )
             ->add(
@@ -64,7 +66,7 @@ class GameType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => GameModel::class,
+            'data_class' => Game::class,
         ]);
     }
 }

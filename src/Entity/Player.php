@@ -1,27 +1,64 @@
 <?php
 
-namespace App\Model;
+namespace App\Entity;
 
-use App\Model\Traits\UuidTrait;
+use Doctrine\ORM\Mapping as ORM;
 
-class PlayerModel
+/**
+ * @ORM\Entity
+ */
+class Player
 {
-    use UuidTrait;
-
     public const DICE_COLOR = [
         'red',
+        'purple',
         'yellow',
-        'green',
         'orange',
-        'pruple',
         'blue',
+        'green',
     ];
 
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     */
+    private int $id;
+
+    /**
+     * @ORM\Column(name="pseudo", type="string")
+     */
     private string $pseudo;
+
+    /**
+     * @ORM\Column(name="bot", type="boolean")
+     */
     private bool $bot;
+
+    /**
+     * @ORM\Column(name="number_of_dices", type="integer")
+     */
     private int $numberOfDices;
+
+    /**
+     * @ORM\Column(name="dice_color", type="string")
+     */
     private string $diceColor;
+
+    /**
+     * @ORM\Column(name="dices", type="array")
+     */
     private array $dices;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Game", inversedBy="players")
+     */
+    private Game $game;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     public function getPseudo(): string
     {
@@ -79,6 +116,18 @@ class PlayerModel
     public function setDices(array $dices): self
     {
         $this->dices = $dices;
+
+        return $this;
+    }
+
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(Game $game): self
+    {
+        $this->game = $game;
 
         return $this;
     }
