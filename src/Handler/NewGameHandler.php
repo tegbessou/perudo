@@ -21,6 +21,7 @@ class NewGameHandler
             $creatorColor
         );
         $this->assignPlayers($game, $player);
+        $this->setWhoStarting($game);
     }
 
     private function assignPlayers(Game $game, Player $player): void
@@ -38,5 +39,15 @@ class NewGameHandler
     private function assignBotPlayers(Game $game): void
     {
         $this->newPlayerHandler->createBotPlayers($game);
+    }
+
+    private function setWhoStarting(Game $game): void
+    {
+        $game->getPlayers()->get($this->whoStarting($game->getNumberOfPlayers()))->setMyTurn(true);
+    }
+
+    private function whoStarting(int $numberOfPlayer): int
+    {
+        return random_int(0, $numberOfPlayer - 1);
     }
 }

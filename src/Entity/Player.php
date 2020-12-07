@@ -51,6 +51,11 @@ class Player
     private array $dices;
 
     /**
+     * @ORM\Column(name="my_turn", type="boolean")
+     */
+    private bool $myTurn = false;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Game", inversedBy="players")
      */
     private Game $game;
@@ -128,6 +133,18 @@ class Player
     public function setGame(Game $game): self
     {
         $this->game = $game;
+
+        return $this;
+    }
+
+    public function isMyTurn(): bool
+    {
+        return $this->myTurn;
+    }
+
+    public function setMyTurn(bool $myTurn): self
+    {
+        $this->myTurn = $myTurn;
 
         return $this;
     }
