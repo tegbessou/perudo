@@ -2,9 +2,9 @@
 
 {% block body %}
     <div class="d-flex flex-row justify-content-center">
-        <h2>Game de {{ game.creator }}</h2>
+        <h2>Game de {{ game.creator.pseudo }}</h2>
     </div>
     <div class="d-flex flex-row justify-content-center">
-        <game-board data-game="{{ game.uuid }}"></game-board>
+        <game-board data-game="{{ game.id }}"></game-board>
     </div>
 {% endblock %}

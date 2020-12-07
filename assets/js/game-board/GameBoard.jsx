@@ -4,7 +4,7 @@ import {useFetch} from './hooks';
 import {Dice} from "../components/Dice";
 
 function GameBoard ({uuid}) {
-    const {item: gameBoard, load, loading, players} = useFetch('/api/game_models/' + uuid)
+    const {item: gameBoard, load, loading, players} = useFetch('/api/games/' + uuid)
 
     useEffect(() => {
         load()
@@ -12,7 +12,7 @@ function GameBoard ({uuid}) {
 
     return <div>
         {loading && 'Chargement...'}
-        {players.map(player => <Player key={player['uuid']} player={player} />)}
+        {players.map(player => <Player key={player['id']} player={player} />)}
         <button onClick={load}>Charger GameModel</button>
     </div>
 }

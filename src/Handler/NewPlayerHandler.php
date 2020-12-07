@@ -2,51 +2,60 @@
 
 namespace App\Handler;
 
+use App\Entity\Game;
+use App\Entity\Player;
 use App\Factory\PlayerFactory;
-use App\Model\GameModel;
-use App\Model\PlayerModel;
+use Doctrine\Common\Collections\Collection;
 
 class NewPlayerHandler
 {
     private PlayerFactory $playerFactory;
-    private array $remainingColor = PlayerModel::DICE_COLOR;
+    private array $remainingColor = Player::DICE_COLOR;
 
     public function __construct(PlayerFactory $playerFactory)
     {
         $this->playerFactory = $playerFactory;
     }
 
-    public function createPlayers(GameModel $gameModel): array
+    public function createBotPlayers(Game $game): Game
     {
-        $players = [];
         $index = 0;
-        while ($index < $gameModel->getNumberOfPlayers()) {
-            $players[] = $this->playerFactory->initialize(
-                $this->selectPseudo($gameModel, $players),
-                $this->isBot($players),
-                $this->selectColor($gameModel, $players)
-            );
+        while ($index < $game->getNumberOfPlayers() - 1) {
+            $game->addPlayer($this->playerFactory->initialize(
+                $this->createBotPseudo($game->getPlayers()),
+                true,
+                $this->selectColor($game, $game->getPlayers())
+            ));
             ++$index;
         }
 
-        return $players;
+        return $game;
     }
 
-    private function selectPseudo(GameModel $gameModel, array $players): string
+    public function createCreator(string $pseudo, string $color): Player
     {
-        return empty($players) ? $gameModel->getCreator() : PlayerFactory::BOT_PSEUDO.count($players);
+        return $this->playerFactory->initialize(
+            $pseudo,
+            false,
+            $color
+        );
     }
 
-    private function selectColor(GameModel $gameModel, array $players): string
+    private function createBotPseudo(Collection $players): string
+    {
+        return PlayerFactory::BOT_PSEUDO.$players->count();
+    }
+
+    private function selectColor(Game $game, Collection $players): string
     {
         $this->updateRemainingColors($players);
 
-        return empty($players) ? $gameModel->getCreatorColor() : $this->getRandomColorInRemaining();
+        return $this->getRandomColorInRemaining();
     }
 
-    private function updateRemainingColors(array $players): void
+    private function updateRemainingColors(Collection $players): void
     {
-        /** @var PlayerModel $player */
+        /** @var Player $player */
         foreach ($players as $player) {
             $key = array_search($player->getDiceColor(), $this->remainingColor);
             if ($key === false) {
@@ -61,10 +70,5 @@ class NewPlayerHandler
     private function getRandomColorInRemaining(): string
     {
         return $this->remainingColor[random_int((int) array_key_first($this->remainingColor), (int) array_key_last($this->remainingColor))];
-    }
-
-    private function isBot(array $players): bool
-    {
-        return !empty($players);
     }
 }

@@ -2,42 +2,38 @@
 
 namespace App\Test\Handler;
 
+use App\Entity\Game;
+use App\Entity\Player;
 use App\Handler\NewGameHandler;
 use App\Handler\NewPlayerHandler;
-use App\Model\GameModel;
-use App\Model\PlayerModel;
 use PHPUnit\Framework\TestCase;
 
 class NewGameHandlerTest extends TestCase
 {
     public function testAssignPlayer()
     {
-        $game = (new GameModel())
-            ->setCreator('pedro')
+        $game = (new Game())
             ->setNumberOfPlayers(2);
 
-        $player1 = (new PlayerModel())
+        $player1 = (new Player())
             ->setPseudo('pedro')
             ->setBot(false);
 
-        $player2 = (new PlayerModel())
+        $player2 = (new Player())
             ->setPseudo('Bot 1')
             ->setBot(true);
+        $game->addPlayer($player2);
 
         $newPlayerHandler = $this->createMock(NewPlayerHandler::class);
         $newPlayerHandler
-            ->method('createPlayers')
-            ->willReturn(
-                [
-                    $player1,
-                    $player2,
-                ]
-            );
+            ->method('createCreator')
+            ->willReturn($player1);
+        $newPlayerHandler->method('createBotPlayers')
+            ->willReturn($game);
 
         $newGameHandler = new NewGameHandler($newPlayerHandler);
-        $game = $newGameHandler->assignPlayer($game);
+        $newGameHandler->setup($game, 'pedro', 'blue');
 
-        $this->assertIsArray($game->getPlayers());
         $this->assertCount(2, $game->getPlayers());
     }
 }
