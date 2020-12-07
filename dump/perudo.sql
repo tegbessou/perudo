@@ -44,7 +44,7 @@ CREATE TABLE `doctrine_migration_versions` (
 
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
-INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201020095646','2020-12-07 13:16:21',39),('DoctrineMigrations\\Version20201206161509','2020-12-07 13:16:21',285),('DoctrineMigrations\\Version20201206162018','2020-12-07 13:16:21',273),('DoctrineMigrations\\Version20201206162258','2020-12-07 13:16:21',33),('DoctrineMigrations\\Version20201206163059','2020-12-07 13:16:21',74),('DoctrineMigrations\\Version20201207131612','2020-12-07 13:16:21',176);
+INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201020095646','2020-12-07 15:55:26',44),('DoctrineMigrations\\Version20201206161509','2020-12-07 15:55:26',238),('DoctrineMigrations\\Version20201206162018','2020-12-07 15:55:27',222),('DoctrineMigrations\\Version20201206162258','2020-12-07 15:55:27',34),('DoctrineMigrations\\Version20201206163059','2020-12-07 15:55:27',63),('DoctrineMigrations\\Version20201207131612','2020-12-07 15:55:27',118),('DoctrineMigrations\\Version20201207144640','2020-12-07 15:55:27',227),('DoctrineMigrations\\Version20201207155432','2020-12-07 15:55:27',54);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -89,6 +89,7 @@ CREATE TABLE `player` (
   `dice_color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dices` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:array)',
   `game_id` int DEFAULT NULL,
+  `my_turn` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_98197A65E48FD905` (`game_id`),
   CONSTRAINT `FK_98197A65E48FD905` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`)
@@ -139,4 +140,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-07 13:16:23
+-- Dump completed on 2020-12-07 15:55:29
