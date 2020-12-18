@@ -1,6 +1,10 @@
 import React from "react";
 
 export function Dice ({number, color}) {
+    const style = {
+        "marginRight": "1%"
+    }
+
     if (number === 1) {
         number = 'one'
     } else if (number === 2) {
@@ -16,6 +20,6 @@ export function Dice ({number, color}) {
     }
 
     return <span>
-        <i className={'fas fa-dice-' + number + ' fa-2x dice-color-' + color}></i>
+        <i className={'fas fa-dice-' + number + ' fa-2x dice-color-' + color} style={style}></i>
     </span>
 }

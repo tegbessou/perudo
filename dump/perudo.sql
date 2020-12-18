@@ -24,6 +24,36 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `perudo` /*!40100 DEFAULT CHARACTER SET
 USE `perudo`;
 
 --
+-- Table structure for table `bet`
+--
+
+DROP TABLE IF EXISTS `bet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bet` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `game_id` int DEFAULT NULL,
+  `player_id` int DEFAULT NULL,
+  `dice_number` int NOT NULL,
+  `dice_value` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_FBF0EC9BE48FD905` (`game_id`),
+  KEY `IDX_FBF0EC9B99E6F5DF` (`player_id`),
+  CONSTRAINT `FK_FBF0EC9B99E6F5DF` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`),
+  CONSTRAINT `FK_FBF0EC9BE48FD905` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bet`
+--
+
+LOCK TABLES `bet` WRITE;
+/*!40000 ALTER TABLE `bet` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bet` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `doctrine_migration_versions`
 --
 
@@ -44,7 +74,7 @@ CREATE TABLE `doctrine_migration_versions` (
 
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
-INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201020095646','2020-12-07 15:55:26',44),('DoctrineMigrations\\Version20201206161509','2020-12-07 15:55:26',238),('DoctrineMigrations\\Version20201206162018','2020-12-07 15:55:27',222),('DoctrineMigrations\\Version20201206162258','2020-12-07 15:55:27',34),('DoctrineMigrations\\Version20201206163059','2020-12-07 15:55:27',63),('DoctrineMigrations\\Version20201207131612','2020-12-07 15:55:27',118),('DoctrineMigrations\\Version20201207144640','2020-12-07 15:55:27',227),('DoctrineMigrations\\Version20201207155432','2020-12-07 15:55:27',54);
+INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201207161331','2020-12-07 16:13:37',453);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,12 +113,12 @@ DROP TABLE IF EXISTS `player`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `player` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `game_id` int DEFAULT NULL,
   `pseudo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `bot` tinyint(1) NOT NULL,
   `number_of_dices` int NOT NULL,
   `dice_color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dices` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:array)',
-  `game_id` int DEFAULT NULL,
   `my_turn` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_98197A65E48FD905` (`game_id`),
@@ -140,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-07 15:55:29
+-- Dump completed on 2020-12-07 16:13:39
