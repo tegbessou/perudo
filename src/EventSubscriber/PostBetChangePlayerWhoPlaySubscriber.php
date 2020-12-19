@@ -4,7 +4,7 @@ namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Bet;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Handler\ChangeTurnPlayerHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -12,11 +12,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class PostBetChangePlayerWhoPlaySubscriber implements EventSubscriberInterface
 {
-    private EntityManagerInterface $entityManager;
+    private ChangeTurnPlayerHandler $changeTurnPlayerHandler;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ChangeTurnPlayerHandler $changeTurnPlayerHandler)
     {
-        $this->entityManager = $entityManager;
+        $this->changeTurnPlayerHandler = $changeTurnPlayerHandler;
     }
 
     public static function getSubscribedEvents()
@@ -34,25 +34,6 @@ class PostBetChangePlayerWhoPlaySubscriber implements EventSubscriberInterface
             return;
         }
 
-        // One method
-        $indexNewPlayerWhoPlay = 0;
-
-        foreach ($lastBet->getGame()->getPlayers() as $index => $player) {
-            if ($player->isMyTurn()) {
-                $indexNewPlayerWhoPlay = $index;
-                break;
-            }
-        }
-
-        //Other method
-        if(!$lastBet->getGame()->getPlayers()->containsKey($indexNewPlayerWhoPlay+1)) {
-            $indexNewPlayerWhoPlay = 0;
-        };
-
-        ($lastBet->getGame()->getPlayers()->get($indexNewPlayerWhoPlay))
-            ->setMyTurn(false);
-        ($lastBet->getGame()->getPlayers()->get($indexNewPlayerWhoPlay+1))
-            ->setMyTurn(true);
-        $this->entityManager->flush();
+        $this->changeTurnPlayerHandler->changeTurnPlayer($lastBet->getGame());
     }
 }

@@ -1,36 +1,44 @@
-import {render, unmountComponentAtNode} from 'react-dom'
-import React, {useState, useEffect} from 'react'
-import {get} from '../api/index';
-import {Alert} from '../components/Alert'
-import {BetList} from "../bet-list/BetList";
-import {Player} from "../player/Player";
+import {render, unmountComponentAtNode} from "react-dom";
+import React, {useEffect, useState} from "react";
+import useFetch from "../hooks/useFetch";
+import Alert from "../components/Alert"
+import BetList from "../bet-list/BetList";
+import Player from "../player/Player";
 import {BetsListProvider} from "../context/betsListContext";
-import Snackbar from '@material-ui/core/Snackbar';
+import {CurrentPlayerProvider} from "../context/currentPlayerContext";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const GameBoard = React.memo(({gameId}) => {
-    const {item: game, loading, error, hasError, load} = get('/api/games/' + gameId);
     const [betsList, setBetsList] = useState([]);
     const addBet = (bets) => {
         setBetsList(bets);
+    };
+    const [currentPlayer, setCurrentPlayer] = useState({});
+    const selectCurrentPlayer = (player) => {
+        setCurrentPlayer(player);
     }
 
-    useEffect(() => {
-        load();
-    }, [betsList])
+    const {
+        response: game,
+        error,
+        loading,
+    } = useFetch("/api/games/" + gameId);
 
     return <div>
         <BetsListProvider value={{betsList, addBet}}>
-            <div className='game-board-player-list'>
-                {!loading && !hasError && game.players.map(player => <Player key={player.id} player={player} game={game}/>)}
-            </div>
-            <div>
-                {!loading && !hasError && <BetList game={game}/>}
-            </div>
-            <Snackbar open={hasError}>
-                <Alert severity="error">
-                    {hasError && error}
-                </Alert>
-            </Snackbar>
+            <CurrentPlayerProvider value={{currentPlayer, selectCurrentPlayer}}>
+                <div className="game-board-player-list">
+                    {!loading && !error && game.players.map(player => <Player key={player.id} player={player} game={game} isCurrentPlayer={player.id===currentPlayer.id}/>)}
+                </div>
+                <div>
+                    {!loading && !error && <BetList game={game}/>}
+                </div>
+                <Snackbar open={error}>
+                    <Alert severity="error">
+                        {error && "Not found"}
+                    </Alert>
+                </Snackbar>
+            </CurrentPlayerProvider>
         </BetsListProvider>
     </div>
 })
@@ -46,4 +54,4 @@ class GameBoardElement extends HTMLElement {
     }
 }
 
-customElements.define('game-board', GameBoardElement)
+customElements.define("game-board", GameBoardElement)

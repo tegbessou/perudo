@@ -20,11 +20,16 @@ class GameManager
     public function create(Game $game): void
     {
         $this->entityManager->persist($game);
-        $this->entityManager->flush();
+        $this->save();
     }
 
     public function find(int $id): ?object
     {
         return $this->repository->find($id);
+    }
+
+    public function save(): void
+    {
+        $this->entityManager->flush();
     }
 }

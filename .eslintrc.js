@@ -13,6 +13,8 @@ module.exports = {
     },
     "rules": {
         "import/prefer-default-export": "off",
-        "import/extensions": "off"
+        "import/extensions": "off",
+        "quotes": [2, "double", "avoid-escape"],
+        'no-plusplus': [2, { allowForLoopAfterthoughts: true }]
     }
 };

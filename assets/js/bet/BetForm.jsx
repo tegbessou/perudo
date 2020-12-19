@@ -1,13 +1,18 @@
-import React, {useState, useEffect, useContext, useCallback} from 'react'
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import React, {useState, useEffect, useContext, useCallback} from "react"
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import useFetch from "../hooks/useFetch";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import {Button} from "@material-ui/core";
 import BetsListContext from "../context/betsListContext";
-import {getPagination, sendData} from "../api";
 import {getDiceNumberOnGame, generateDiceValue} from "./utils";
+import postApi from "../api/PostAPi";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "../components/Alert";
+import CurrentPlayerContext from "../context/currentPlayerContext";
+import fetchApi from "../api/FetchAPi";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -21,36 +26,38 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-// Upgrade this code
-export function BetForm ({game, player}) {
+export default function BetForm ({game, player}) {
   const { betsList, addBet } = useContext(BetsListContext);
-  const {items: lastBet, load} = getPagination('/api/bets?game=' + game.id + '&itemsPerPage=1&order[id]=desc');
-  const {item: bet, post, errors, hasErrors, pending} = sendData('/api/bets');
+  const { selectCurrentPlayer } = useContext(CurrentPlayerContext);
   const classes = useStyles();
   const [diceNumber, setDiceNumber] = useState(1);
   const [diceValue, setDiceValue] = useState(1);
   const [diceNumberOptions, setDiceNumberOptions] = useState([]);
   const [diceValueOptions, setDiceValueOptions] = useState([]);
+  const [error, setError] = useState(null);
+
+  const {
+    response: lastBet,
+    loading,
+  } = useFetch("/api/bets?game={game.id}&itemsPerPage=1&order[id]=desc");
 
   useEffect(() => {
-    load();
-  }, []);
-
-  useEffect(() => {
-    loadDiceNumberPossibility(game, lastBet);
-    loadDiceValuePossibility(game, lastBet);
-  }, [lastBet]);
+      loadDiceNumberPossibility(game, lastBet);
+      loadDiceValuePossibility(game, lastBet)
+    },
+    [loading]
+  )
 
   const loadDiceNumberPossibility = async (game, lastBet) => {
-    if (lastBet.length === 0) {
+    if (loading) {
       return;
     }
     let diceNumber = getDiceNumberOnGame(game)
     let startDiceNumber = 1;
     let startDiceValue = 1;
-    if (lastBet.length > 0) {
-      startDiceNumber = lastBet[0].diceNumber;
-      startDiceValue = lastBet[0].diceValue;
+    if (lastBet["hydra:member"].length > 0) {
+      startDiceNumber = lastBet["hydra:member"][0].diceNumber;
+      startDiceValue = lastBet["hydra:member"][0].diceValue;
     }
     let result = [];
 
@@ -66,12 +73,12 @@ export function BetForm ({game, player}) {
   };
 
   const loadDiceValuePossibility = async (game, lastBet) => {
-    if (lastBet.length === 0) {
+    if (loading) {
       return;
     }
     let lastBetDiceValue = 0;
-    if (lastBet.length > 0) {
-      lastBetDiceValue = lastBet[0].diceValue;
+    if (lastBet["hydra:member"].length > 0) {
+      lastBetDiceValue = lastBet["hydra:member"][0].diceValue;
     }
 
     if (lastBetDiceValue === 6) {
@@ -83,8 +90,8 @@ export function BetForm ({game, player}) {
   };
 
   const onChangeDiceNumber = async (event, lastBet) => {
-    let lastBetDiceNumber = lastBet[0].diceNumber;
-    let lastBetDiceValue = lastBet[0].diceValue;
+    let lastBetDiceNumber = lastBet["hydra:member"][0].diceNumber;
+    let lastBetDiceValue = lastBet["hydra:member"][0].diceValue;
 
     setDiceNumber(event.target.value);
     setDiceValue(event.target.value <= lastBetDiceNumber ? lastBetDiceValue + 1: 1)
@@ -96,28 +103,33 @@ export function BetForm ({game, player}) {
   };
 
   const submitBet = async (e, game) => {
-    //Add error management
-    //Clean cache when bet
     e.preventDefault();
 
-    let body = {
-      'game': '/api/games/' + game.id,
-      'player': player['@id'],
-      'diceNumber': diceNumber,
-      'diceValue': diceValue,
-    };
-    //Create hooks to push request
-    post(body);
-    console.log(bet);
-    if (hasErrors) {
-      return;
+    try {
+      const fetchResponse = await postApi(
+        "/api/bets", {
+        body:
+          {
+            "game": "/api/games/" + game.id,
+            "player": player["@id"],
+            "diceNumber": diceNumber,
+            "diceValue": diceValue,
+          },
+        method: "POST",
+      });
+      if (fetchResponse["@context"] === "/api/contexts/ConstraintViolationList") {
+        throw fetchResponse["hydra:description"];
+      }
+      loadDiceNumberPossibility(game, {"hydra:member" : [fetchResponse]});
+      loadDiceValuePossibility(game, {"hydra:member" : [fetchResponse]});
+      addBet([...betsList, fetchResponse]);
+      fetchApi("/api/players?game={game.id}&myTurn=true", {}, selectCurrentPlayer, true);
+    } catch (e) {
+      setError(e);
     }
-
-    load();
   }
 
   return <div>
-    {console.log(betsList)}
     <form onSubmit={(e) => {submitBet(e, game, lastBet)}}>
       <FormControl className={classes.formControl}>
         <InputLabel id="dice-number-select-label">Dés</InputLabel>
@@ -142,8 +154,13 @@ export function BetForm ({game, player}) {
         </Select>
       </FormControl>
       <FormControl className={classes.formControl}>
-          {!player['bot'] && player['myTurn'] && <Button type="submit" variant="contained" color="primary">Parier</Button>}
+          {!player["bot"] && player["myTurn"] && <Button type="submit" variant="contained" color="primary">Parier</Button>}
       </FormControl>
     </form>
+    <Snackbar open={error !== null}>
+      <Alert severity="error">
+        {error}
+      </Alert>
+    </Snackbar>
   </div>
 }

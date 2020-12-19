@@ -6,6 +6,5 @@ class SwitchPlayerWhoPlayHandler
 {
     public function switchPlayerWhoPlay(): void
     {
-
     }
 }

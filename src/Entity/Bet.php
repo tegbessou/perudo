@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Validator as AppAssert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,9 +22,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     itemOperations={
  *         "get"
  *     })
- * @ApiFilter(SearchFilter::class, properties={"game": "exact"})
- * @ApiFilter(OrderFilter::class, properties={"id"})
- * @AppAssert\BetDiceSuperiorPreviousBet
+ *     @ApiFilter(SearchFilter::class, properties={"game": "exact"})
+ *     @ApiFilter(OrderFilter::class, properties={"id"})
+ *     @AppAssert\BetDiceSuperiorPreviousBet
  */
 class Bet
 {
@@ -95,6 +95,7 @@ class Bet
     public function setDiceValue(int $diceValue): self
     {
         $this->diceValue = $diceValue;
+
         return $this;
     }
 

@@ -1,22 +1,27 @@
-import React, {useEffect, useContext, useState} from 'react'
+import React, {useEffect, useContext} from "react"
 import BetsListContext from "../context/betsListContext";
+import useFetch from "../hooks/useFetch";
 
-export function BetList ({game}) {
-  const [loading, setLoading] = useState(false);
+export default function BetList ({game}) {
   const { betsList, addBet } = useContext(BetsListContext);
+
+  const {
+    response: bets,
+    loading,
+  } = useFetch("/api/bets?game=" + game.id);
 
   useEffect(() => {
     loadBets();
-  }, []);
+  }, [loading]);
 
   const loadBets = async () => {
-    setLoading(true);
-    //Move from here
-    let bets = await fetch('/api/bets?game=' + game).then(res => res.json());
-    if (bets['hydra:member'].length > 0) {
-      addBet(bets['hydra:member']);
+    if (loading) {
+      return;
     }
-    setLoading(false);
+
+    if (bets["hydra:member"].length > 0) {
+      addBet(bets["hydra:member"]);
+    }
   };
 
   return <div>
@@ -24,7 +29,7 @@ export function BetList ({game}) {
       <div className="card-body">
         <h5 className="card-title">Liste des paris</h5>
         {loading && "Chargement..."}
-        {betsList.length > 0 && betsList.map(bet => <div key={bet.id}>{bet.player.pseudo} a parié {bet.diceNumber} dé{bet.diceNumber > 1 && 's'} de {bet.diceValue}</div>)}
+        {betsList.length > 0 && betsList.map(bet => <div key={bet.id}>{bet.player.pseudo} a parié {bet.diceNumber} dé{bet.diceNumber > 1 && "s"} de {bet.diceValue}</div>)}
       </div>
     </div>
   </div>
