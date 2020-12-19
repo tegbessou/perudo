@@ -11,6 +11,7 @@ export function BetList ({game}) {
 
   const loadBets = async () => {
     setLoading(true);
+    //Move from here
     let bets = await fetch('/api/bets?game=' + game).then(res => res.json());
     if (bets['hydra:member'].length > 0) {
       addBet(bets['hydra:member']);

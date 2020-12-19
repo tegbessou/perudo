@@ -1,11 +1,13 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useCallback} from 'react'
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import {Button} from "@material-ui/core";
 import BetsListContext from "../context/betsListContext";
+import {getPagination, sendData} from "../api";
+import {getDiceNumberOnGame, generateDiceValue} from "./utils";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -20,48 +22,35 @@ const useStyles = makeStyles((theme) =>
 );
 
 // Upgrade this code
-export function BetForm ({gameId, player}) {
+export function BetForm ({game, player}) {
+  const { betsList, addBet } = useContext(BetsListContext);
+  const {items: lastBet, load} = getPagination('/api/bets?game=' + game.id + '&itemsPerPage=1&order[id]=desc');
+  const {item: bet, post, errors, hasErrors, pending} = sendData('/api/bets');
   const classes = useStyles();
   const [diceNumber, setDiceNumber] = useState(1);
   const [diceValue, setDiceValue] = useState(1);
   const [diceNumberOptions, setDiceNumberOptions] = useState([]);
   const [diceValueOptions, setDiceValueOptions] = useState([]);
-  const [gameIdResource] = useState(gameId);
-  const { betsList, addBet } = useContext(BetsListContext);
 
   useEffect(() => {
-    loadDiceNumberPossibility();
-    loadDiceValuePossibility();
-  }, [])
+    load();
+  }, []);
 
-  const getDiceNumberOfGame = async () => {
-    let game = await fetch('https://perudo.docker/api/games/' + gameIdResource).then(res => res.json());
-    let diceNumber = 0;
-    for (let i = 0; i < game.numberOfPlayers; i++) {
-      diceNumber += game.players[i].numberOfDices;
+  useEffect(() => {
+    loadDiceNumberPossibility(game, lastBet);
+    loadDiceValuePossibility(game, lastBet);
+  }, [lastBet]);
+
+  const loadDiceNumberPossibility = async (game, lastBet) => {
+    if (lastBet.length === 0) {
+      return;
     }
-
-    return diceNumber;
-  }
-
-  const generatDiceValue = lastBetDiceValue => {
-    let result = [];
-
-    for (let i = lastBetDiceValue + 1; i <= 6; i++) {
-      result.push({value: i, label: i});
-    }
-
-    return result;
-  }
-  const loadDiceNumberPossibility = async () => {
-    //Put in cache
-    let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
-    let diceNumber = await getDiceNumberOfGame()
+    let diceNumber = getDiceNumberOnGame(game)
     let startDiceNumber = 1;
     let startDiceValue = 1;
-    if (lastBet['hydra:member'].length > 0) {
-      startDiceNumber = lastBet['hydra:member'][0].diceNumber;
-      startDiceValue = lastBet['hydra:member'][0].diceValue;
+    if (lastBet.length > 0) {
+      startDiceNumber = lastBet[0].diceNumber;
+      startDiceValue = lastBet[0].diceValue;
     }
     let result = [];
 
@@ -76,12 +65,13 @@ export function BetForm ({gameId, player}) {
     setDiceNumberOptions(result);
   };
 
-  const loadDiceValuePossibility = async () => {
-    //Put in cache
-    let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
+  const loadDiceValuePossibility = async (game, lastBet) => {
+    if (lastBet.length === 0) {
+      return;
+    }
     let lastBetDiceValue = 0;
-    if (lastBet['hydra:member'].length > 0) {
-      lastBetDiceValue = lastBet['hydra:member'][0].diceValue;
+    if (lastBet.length > 0) {
+      lastBetDiceValue = lastBet[0].diceValue;
     }
 
     if (lastBetDiceValue === 6) {
@@ -89,73 +79,53 @@ export function BetForm ({gameId, player}) {
     }
 
     setDiceValue(lastBetDiceValue === 0 ? 1 : lastBetDiceValue + 1);
-    setDiceValueOptions(generatDiceValue(lastBetDiceValue));
+    setDiceValueOptions(generateDiceValue(lastBetDiceValue));
   };
 
-  const onChangeDiceNumber = async (event) => {
-    //Put in cache
-    let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
-    let lastBetDiceNumber = lastBet['hydra:member'][0].diceNumber;
-    let lastBetDiceValue = lastBet['hydra:member'][0].diceValue;
-
-    if (event.target.value <= lastBetDiceNumber) {
-      setDiceValue(lastBetDiceValue+1)
-      setDiceValueOptions(generatDiceValue(lastBetDiceValue));
-
-      return;
-    }
+  const onChangeDiceNumber = async (event, lastBet) => {
+    let lastBetDiceNumber = lastBet[0].diceNumber;
+    let lastBetDiceValue = lastBet[0].diceValue;
 
     setDiceNumber(event.target.value);
-    setDiceValue(1);
-    setDiceValueOptions(generatDiceValue(0));
+    setDiceValue(event.target.value <= lastBetDiceNumber ? lastBetDiceValue + 1: 1)
+    setDiceValueOptions(generateDiceValue(event.target.value <= lastBetDiceNumber ? lastBetDiceValue : 0));
   };
 
-  const onChangeDiceValue = async (event) => {
+  const onChangeDiceValue = (event) => {
     setDiceValue(event.target.value);
   };
 
-  const bets = async (evt) => {
-    //Create hooks to push request
+  const submitBet = async (e, game) => {
     //Add error management
     //Clean cache when bet
-    evt.preventDefault();
-    const settings = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/ld+json',
-        'Content-Type': 'application/json',
-      }
+    e.preventDefault();
+
+    let body = {
+      'game': '/api/games/' + game.id,
+      'player': player['@id'],
+      'diceNumber': diceNumber,
+      'diceValue': diceValue,
     };
-
-    settings.body = JSON.stringify(
-      {
-        'game': '/api/games/' + gameId,
-        'player': player['@id'],
-        'diceNumber': diceNumber,
-        'diceValue': diceValue,
-      }
-    );
-
-    try {
-      const fetchResponse = await fetch(`https://perudo.docker/api/bets`, settings).then(res => res.json());
-      loadDiceNumberPossibility();
-      loadDiceValuePossibility();
-      addBet([...betsList, fetchResponse]);
-    } catch (e) {
-      return e;
+    //Create hooks to push request
+    post(body);
+    console.log(bet);
+    if (hasErrors) {
+      return;
     }
+
+    load();
   }
 
-  //Sortir les select d'ici avec la logique
   return <div>
-    <form onSubmit={bets}>
+    {console.log(betsList)}
+    <form onSubmit={(e) => {submitBet(e, game, lastBet)}}>
       <FormControl className={classes.formControl}>
         <InputLabel id="dice-number-select-label">Dés</InputLabel>
         <Select
           value={diceNumber}
           labelId="dice-number-select-label"
           id="dice-number-simple-select"
-          onChange={onChangeDiceNumber}
+          onChange={(event) => {onChangeDiceNumber(event, lastBet)}}
         >
           {diceNumberOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
         </Select>

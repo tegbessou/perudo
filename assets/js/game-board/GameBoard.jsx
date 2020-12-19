@@ -21,10 +21,10 @@ const GameBoard = React.memo(({gameId}) => {
     return <div>
         <BetsListProvider value={{betsList, addBet}}>
             <div className='game-board-player-list'>
-                {!loading && !hasError && game.players.map(player => <Player key={player.id} player={player} gameId={gameId}/>)}
+                {!loading && !hasError && game.players.map(player => <Player key={player.id} player={player} game={game}/>)}
             </div>
             <div>
-                {!loading && !hasError && <BetList game={gameId}/>}
+                {!loading && !hasError && <BetList game={game}/>}
             </div>
             <Snackbar open={hasError}>
                 <Alert severity="error">
