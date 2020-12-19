@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
+// Upgrade this code
 export function BetForm ({gameId, player}) {
   const classes = useStyles();
   const [diceNumber, setDiceNumber] = useState(1);
@@ -52,8 +53,8 @@ export function BetForm ({gameId, player}) {
 
     return result;
   }
-
   const loadDiceNumberPossibility = async () => {
+    //Put in cache
     let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
     let diceNumber = await getDiceNumberOfGame()
     let startDiceNumber = 1;
@@ -76,6 +77,7 @@ export function BetForm ({gameId, player}) {
   };
 
   const loadDiceValuePossibility = async () => {
+    //Put in cache
     let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
     let lastBetDiceValue = 0;
     if (lastBet['hydra:member'].length > 0) {
@@ -91,6 +93,7 @@ export function BetForm ({gameId, player}) {
   };
 
   const onChangeDiceNumber = async (event) => {
+    //Put in cache
     let lastBet = await fetch('https://perudo.docker/api/bets?game=' + gameIdResource + '&itemsPerPage=1&order[id]=desc').then(res => res.json());
     let lastBetDiceNumber = lastBet['hydra:member'][0].diceNumber;
     let lastBetDiceValue = lastBet['hydra:member'][0].diceValue;
@@ -112,6 +115,9 @@ export function BetForm ({gameId, player}) {
   };
 
   const bets = async (evt) => {
+    //Create hooks to push request
+    //Add error management
+    //Clean cache when bet
     evt.preventDefault();
     const settings = {
       method: 'POST',
@@ -140,6 +146,7 @@ export function BetForm ({gameId, player}) {
     }
   }
 
+  //Sortir les select d'ici avec la logique
   return <div>
     <form onSubmit={bets}>
       <FormControl className={classes.formControl}>

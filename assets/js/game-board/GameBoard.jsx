@@ -1,50 +1,37 @@
 import {render, unmountComponentAtNode} from 'react-dom'
-import React, {useState, useEffect, useContext} from 'react'
-import {useFetch} from '../hooks/hooks';
-import {Dice} from "../components/Dice";
-import {BetForm} from "../bet/BetForm";
+import React, {useState, useEffect} from 'react'
+import {get} from '../api/index';
+import {Alert} from '../components/Alert'
 import {BetList} from "../bet-list/BetList";
-import {Button} from "@material-ui/core";
-import CheckIcon from '@material-ui/icons/Check';
-import green from "@material-ui/core/colors/green";
-import BetsListContext, {BetsListProvider} from "../context/betsListContext";
+import {Player} from "../player/Player";
+import {BetsListProvider} from "../context/betsListContext";
+import Snackbar from '@material-ui/core/Snackbar';
 
 const GameBoard = React.memo(({gameId}) => {
-    const {item, load, loading, players} = useFetch('/api/games/' + gameId);
+    const {item: game, loading, error, hasError, load} = get('/api/games/' + gameId);
     const [betsList, setBetsList] = useState([]);
     const addBet = (bets) => {
         setBetsList(bets);
     }
 
-    const style = {
-        float: 'left',
-    }
-
     useEffect(() => {
-        load()
+        load();
     }, [betsList])
 
     return <div>
-        {console.log(item)}
         <BetsListProvider value={{betsList, addBet}}>
-            <div style={style}>
-                {loading && 'Chargement...'}
-                {players.map(player => <Player key={player.id} player={player} gameId={gameId}/>)}
+            <div className='game-board-player-list'>
+                {!loading && !hasError && game.players.map(player => <Player key={player.id} player={player} gameId={gameId}/>)}
             </div>
             <div>
-                <BetList game={gameId}/>
+                {!loading && !hasError && <BetList game={gameId}/>}
             </div>
+            <Snackbar open={hasError}>
+                <Alert severity="error">
+                    {hasError && error}
+                </Alert>
+            </Snackbar>
         </BetsListProvider>
-    </div>
-})
-
-//Extract player in other component
-const Player = React.memo(({player, gameId}) => {
-    return <div>
-        <h4>{player && player['pseudo']} {player && player.myTurn && <CheckIcon style={{ color: green[500] }}/>}</h4>
-        {player && !player['bot'] && player['dices'].map((dice, index) => <Dice key={index} color={player['diceColor']} number={dice} />)}
-        {player && !player['bot'] && <BetForm player={player} gameId={gameId}/>}
-        {player && !player['bot'] && player['myTurn'] && <Button variant="contained" color="primary">Menteur</Button>}
     </div>
 })
 
