@@ -1,0 +1,4 @@
+App\Entity\Game:
+  game_1:
+    numberOfPlayers: 3
+    creator: '@player_1'

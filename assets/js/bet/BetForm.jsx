@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-export default function BetForm ({game, player}) {
+export default function BetForm ({game, player, isCurrentPlayer}) {
   const { betsList, addBet } = useContext(BetsListContext);
   const { selectCurrentPlayer } = useContext(CurrentPlayerContext);
   const classes = useStyles();
@@ -154,7 +154,7 @@ export default function BetForm ({game, player}) {
         </Select>
       </FormControl>
       <FormControl className={classes.formControl}>
-          {!player["bot"] && player["myTurn"] && <Button type="submit" variant="contained" color="primary">Parier</Button>}
+          {!player["bot"] && isCurrentPlayer && <Button id="bet-submit-button" type="submit" variant="contained" color="primary">Parier</Button>}
       </FormControl>
     </form>
     <Snackbar open={error !== null}>

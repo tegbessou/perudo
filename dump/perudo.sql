@@ -41,7 +41,7 @@ CREATE TABLE `bet` (
   KEY `IDX_FBF0EC9B99E6F5DF` (`player_id`),
   CONSTRAINT `FK_FBF0EC9B99E6F5DF` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`),
   CONSTRAINT `FK_FBF0EC9BE48FD905` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,6 +50,7 @@ CREATE TABLE `bet` (
 
 LOCK TABLES `bet` WRITE;
 /*!40000 ALTER TABLE `bet` DISABLE KEYS */;
+INSERT INTO `bet` VALUES (1,1,1,1,1),(2,1,2,1,2);
 /*!40000 ALTER TABLE `bet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +75,7 @@ CREATE TABLE `doctrine_migration_versions` (
 
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
-INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201207161331','2020-12-07 16:13:37',453);
+INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20201207161331','2020-12-19 21:49:28',527);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,7 +93,7 @@ CREATE TABLE `game` (
   PRIMARY KEY (`id`),
   KEY `IDX_232B318C61220EA6` (`creator_id`),
   CONSTRAINT `FK_232B318C61220EA6` FOREIGN KEY (`creator_id`) REFERENCES `player` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,6 +102,7 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
+INSERT INTO `game` VALUES (1,1,3);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +125,7 @@ CREATE TABLE `player` (
   PRIMARY KEY (`id`),
   KEY `IDX_98197A65E48FD905` (`game_id`),
   CONSTRAINT `FK_98197A65E48FD905` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,6 +134,7 @@ CREATE TABLE `player` (
 
 LOCK TABLES `player` WRITE;
 /*!40000 ALTER TABLE `player` DISABLE KEYS */;
+INSERT INTO `player` VALUES (1,1,'Pedro',0,5,'red','a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}',1),(2,1,'Bot 1',1,5,'purple','a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}',0),(3,1,'Bot 2',1,5,'green','a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}',0);
 /*!40000 ALTER TABLE `player` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,4 +173,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-07 16:13:39
+-- Dump completed on 2020-12-19 21:49:30

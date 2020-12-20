@@ -24,7 +24,7 @@ export default function Player ({player, game, isCurrentPlayer}) {
   return <div>
     <h4>{player && player["pseudo"]} {player && player && isCurrentPlayer && <CheckIcon style={{ color: green[500] }}/>}</h4>
     {player && !player["bot"] && player["dices"].map((dice, index) => <Dice key={index} color={player["diceColor"]} number={dice} />)}
-    {player && !player["bot"] && <BetForm player={player} game={game}/>}
-    {player && !player["bot"] && player["myTurn"] && <Button variant="contained" color="primary">Menteur</Button>}
+    {player && !player["bot"] && <BetForm isCurrentPlayer={isCurrentPlayer} player={player} game={game}/>}
+    {player && !player["bot"] && isCurrentPlayer && <Button variant="contained" color="primary">Menteur</Button>}
   </div>
 }
