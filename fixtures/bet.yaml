@@ -1,0 +1,12 @@
+App\Entity\Bet:
+  bet_1:
+    diceNumber: 1
+    diceValue: 1
+    game: '@game_1'
+    player: '@player_1'
+
+  bet_2:
+    diceNumber: 1
+    diceValue: 2
+    game: '@game_1'
+    player: '@player_2'

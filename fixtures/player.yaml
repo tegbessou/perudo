@@ -1,0 +1,27 @@
+App\Entity\Player:
+  player_1:
+    pseudo: 'Pedro'
+    bot: false
+    numberOfDices: 5
+    diceColor: 'red'
+    dices: [1, 2, 3, 4, 5]
+    myTurn: true
+    game: '@game_1'
+
+  player_2:
+    pseudo: 'Bot 1'
+    bot: true
+    numberOfDices: 5
+    diceColor: 'purple'
+    dices: [ 1, 2, 3, 4, 5 ]
+    myTurn: false
+    game: '@game_1'
+
+  player_3:
+    pseudo: 'Bot 2'
+    bot: true
+    numberOfDices: 5
+    diceColor: 'green'
+    dices: [ 1, 2, 3, 4, 5 ]
+    myTurn: false
+    game: '@game_1'

@@ -4,6 +4,14 @@ body {
     background-color: lightgrey;
 }
 
+.game-board {
+    width: 40%;
+}
+
+.game-board-player-list {
+    float: left;
+}
+
 .dice-color-red {
     color: #FF3333;
 }

@@ -1,35 +1,52 @@
-import {render, unmountComponentAtNode} from 'react-dom'
-import React, {useEffect} from 'react'
-import {useFetch} from './hooks';
-import {Dice} from "../components/Dice";
+import {render, unmountComponentAtNode} from "react-dom";
+import React, {useEffect, useState} from "react";
+import useFetch from "../hooks/useFetch";
+import Alert from "../components/Alert"
+import BetList from "../bet-list/BetList";
+import Player from "../player/Player";
+import {BetsListProvider} from "../context/betsListContext";
+import {CurrentPlayerProvider} from "../context/currentPlayerContext";
+import Snackbar from "@material-ui/core/Snackbar";
 
-function GameBoard ({uuid}) {
-    const {item: gameBoard, load, loading, players} = useFetch('/api/games/' + uuid)
+const GameBoard = React.memo(({gameId}) => {
+    const [betsList, setBetsList] = useState([]);
+    const addBet = (bets) => {
+        setBetsList(bets);
+    };
+    const [currentPlayer, setCurrentPlayer] = useState({});
+    const selectCurrentPlayer = (player) => {
+        setCurrentPlayer(player);
+    }
 
-    useEffect(() => {
-        load()
-    }, [])
+    const {
+        response: game,
+        error,
+        loading,
+    } = useFetch("/api/games/" + gameId);
 
     return <div>
-        {loading && 'Chargement...'}
-        {players.map(player => <Player key={player.id} player={player} />)}
+        <BetsListProvider value={{betsList, addBet}}>
+            <CurrentPlayerProvider value={{currentPlayer, selectCurrentPlayer}}>
+                <div className="game-board-player-list">
+                    {!loading && !error && game.players.map(player => <Player key={player.id} player={player} game={game} isCurrentPlayer={player.id===currentPlayer.id}/>)}
+                </div>
+                <div>
+                    {!loading && !error && <BetList game={game}/>}
+                </div>
+                <Snackbar open={error}>
+                    <Alert severity="error">
+                        {error && "Not found"}
+                    </Alert>
+                </Snackbar>
+            </CurrentPlayerProvider>
+        </BetsListProvider>
     </div>
-}
-
-function Player ({player}) {
-    return <div>
-        <h4>{player['pseudo']}</h4>
-        {!player['bot'] && player['dices'].map((dice, index) => <Dice key={index} color={player['diceColor']} number={dice} />)}
-        {player['myTurn'] && <h4>A moi de jouer</h4>}
-        {!player['bot'] && player['myTurn'] && <button className="btn btn-primary">Lier</button>}
-        {!player['bot'] && player['myTurn'] && <button className="btn btn-primary">Bet</button>}
-    </div>
-}
+})
 
 class GameBoardElement extends HTMLElement {
     connectedCallback() {
-        const uuid = this.dataset.game;
-        render(<GameBoard uuid={uuid}/>, this)
+        const gameId = this.dataset.game;
+        render(<GameBoard gameId={gameId}/>, this)
     }
 
     disconnectedCallback() {
@@ -37,4 +54,4 @@ class GameBoardElement extends HTMLElement {
     }
 }
 
-customElements.define('game-board', GameBoardElement)
+customElements.define("game-board", GameBoardElement)
