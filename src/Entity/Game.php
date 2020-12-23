@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\NewTurnAction;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,9 +15,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     attributes={
  *         "normalization_context"={"groups"={"game:read"}},
  *     },
- *     collectionOperations={"get"},
- *     itemOperations={"get"}
- * ))
+ *     collectionOperations={
+ *         "get",
+ *         "new_turn"={
+ *             "method"="POST",
+ *             "path"="/games/{id}/new_turn",
+ *             "controller"=NewTurnAction::class,
+ *         }},
+ *         itemOperations={"get"}
+ *     ))
  */
 class Game
 {

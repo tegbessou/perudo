@@ -15,38 +15,57 @@ class ChangeTurnPlayerHandler
         $this->gameManager = $gameManager;
     }
 
-    public function changeTurnPlayer(Game $game): void
+    public function changeTurnPlayer(Game $game, int $indexNewCurrentPlayer = null): void
     {
-        $indexOfNextPlayer = $this->chooseWhichIndexOfPlayerWillPlay($game->getPlayers());
-        $this->applyChangeTurnPlayer($game, $indexOfNextPlayer);
+        $indexOldCurrentPlayer = $this->getIndexOldCurrentPlayer($game);
+
+        if ($indexNewCurrentPlayer === null) {
+            $indexNewCurrentPlayer = $this->getIndexNewCurrentPlayer($game);
+        }
+
+        $this->removeMyTurnToOldPlayer($game, $indexOldCurrentPlayer);
+        $this->addMyTurnToNewPlayer($game, $indexNewCurrentPlayer);
+
+        $this->gameManager->save();
     }
 
-    private function chooseWhichIndexOfPlayerWillPlay(Collection $players): int
+    private function getIndexOldCurrentPlayer(Game $game): int
     {
         $indexNewPlayerWhoPlay = 0;
 
-        foreach ($players as $index => $player) {
+        foreach ($game->getPlayers() as $index => $player) {
             if ($player->isMyTurn()) {
                 $indexNewPlayerWhoPlay = $index;
                 break;
             }
         }
 
-        return $this->checkIfNextPlayerExist($players, $indexNewPlayerWhoPlay) ? $indexNewPlayerWhoPlay : 0;
+        return $indexNewPlayerWhoPlay;
     }
 
-    private function checkIfNextPlayerExist(Collection $players, int $indexOfNextPlayer): bool
+    private function getIndexNewCurrentPlayer(Game $game): int
     {
-        return $players->containsKey($indexOfNextPlayer);
+        $indexNewCurrentPlayer = $this->getIndexOldCurrentPlayer($game) + 1;
+
+        return $this->checkIfNextPlayerExist($game->getPlayers(), $indexNewCurrentPlayer) ? $indexNewCurrentPlayer : 0;
     }
 
-    private function applyChangeTurnPlayer(Game $game, int $indexOfNextPlayer): void
+    private function checkIfNextPlayerExist(Collection $players, int $indexNewCurrentPlayer): bool
     {
-        ($game->getPlayers()->get($indexOfNextPlayer))
-            ->setMyTurn(false);
-        ($game->getPlayers()->get($indexOfNextPlayer + 1))
-            ->setMyTurn(true);
+        return $players->containsKey($indexNewCurrentPlayer);
+    }
 
-        $this->gameManager->save();
+    private function addMyTurnToNewPlayer(Game $game, int $indexNewCurrentPlayer): void
+    {
+        if (!$this->checkIfNextPlayerExist($game->getPlayers(), $indexNewCurrentPlayer)) {
+            throw new \LogicException('Next player specify doesn\'t exist');
+        }
+
+        $game->getPlayers()->get($indexNewCurrentPlayer)->setMyTurn(true);
+    }
+
+    private function removeMyTurnToOldPlayer(Game $game, int $indexOldCurrentPlayer): void
+    {
+        $game->getPlayers()->get($indexOldCurrentPlayer)->setMyTurn(false);
     }
 }

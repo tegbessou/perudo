@@ -22,6 +22,7 @@ class NewGameHandler
         );
         $this->assignPlayers($game, $player);
         $this->setWhoStarting($game);
+        //Launch dice
     }
 
     private function assignPlayers(Game $game, Player $player): void

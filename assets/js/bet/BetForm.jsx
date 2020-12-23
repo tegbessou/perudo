@@ -39,7 +39,7 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
   const {
     response: lastBet,
     loading,
-  } = useFetch("/api/bets?game={game.id}&itemsPerPage=1&order[id]=desc");
+  } = useFetch("/api/bets?game=" + game.id + "&itemsPerPage=1&order[id]=desc");
 
   useEffect(() => {
       loadDiceNumberPossibility(game, lastBet);
@@ -123,7 +123,7 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
       loadDiceNumberPossibility(game, {"hydra:member" : [fetchResponse]});
       loadDiceValuePossibility(game, {"hydra:member" : [fetchResponse]});
       addBet([...betsList, fetchResponse]);
-      fetchApi("/api/players?game={game.id}&myTurn=true", {}, selectCurrentPlayer, true);
+      fetchApi("/api/players?game=" + game.id + "&myTurn=true", {}, selectCurrentPlayer, true);
     } catch (e) {
       setError(e);
     }
