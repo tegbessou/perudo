@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Player;
 use App\Handler\LiarHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -18,10 +19,11 @@ class PlayerTellLiarAction
         $this->serializer = $serializer;
     }
 
-    public function __invoke(Player $player, LiarHandler $liarHandler): JsonResponse
+    public function __invoke(Player $player, LiarHandler $liarHandler, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
             $looser = $liarHandler->liar($player);
+            $entityManager->flush();
         } catch (\LogicException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }
@@ -33,8 +35,7 @@ class PlayerTellLiarAction
     {
         return new JsonResponse(
             [
-                'looser' => $looser->getPseudo(),
-                'looserIsLiar' => $player === $looser,
+                'looser' => $looser->getId(),
                 'players' => $this->serializer->serialize($player->getGame()->getPlayers(), 'json'),
             ],
             Response::HTTP_OK

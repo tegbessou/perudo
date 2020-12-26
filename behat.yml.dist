@@ -5,7 +5,7 @@ default:
                 - App\Tests\Behat\FixtureContext
                 - App\Tests\Behat\ErrorHandlerContext
                 - App\Tests\Behat\FrontContext
-                - Behatch\Context\BrowserContext
+                - App\Tests\Behat\BrowserContext
 
     extensions:
         FriendsOfBehat\SymfonyExtension:

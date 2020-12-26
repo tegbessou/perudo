@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "get",
  *         "tell_liar"={
  *             "method"="POST",
- *             "path"="/players/{id}/tell_lier",
+ *             "path"="/players/{id}/tell_liar",
  *             "controller"=PlayerTellLiarAction::class,
  *         }
  *     },

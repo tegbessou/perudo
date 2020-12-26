@@ -19,7 +19,7 @@ export default function Dice ({number, color}) {
         number = "six"
     }
 
-    return <span>
+    return <span data-title-test={"dice-" + number + "-" + color}>
         <i className={"fas fa-dice-" + number + " fa-2x dice-color-" + color} style={style}></i>
     </span>
 }
