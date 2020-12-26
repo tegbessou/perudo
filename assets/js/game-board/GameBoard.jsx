@@ -10,6 +10,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 
 const GameBoard = React.memo(({gameId}) => {
     const [betsList, setBetsList] = useState([]);
+    const [resultLiarAction, setResultLiarAction] = useState({players: null, isLiarAction: false});
+    const [looser, setLooser] = useState(null);
     const addBet = (bets) => {
         setBetsList(bets);
     };
@@ -19,19 +21,53 @@ const GameBoard = React.memo(({gameId}) => {
     }
 
     const {
+        response: players,
+        loading: playerLoading,
+    } = useFetch("/api/players?game=" + gameId);
+
+    const {
         response: game,
         error,
         loading,
     } = useFetch("/api/games/" + gameId);
 
+    useEffect(() => {
+        if (currentPlayer.myTurn && currentPlayer.bot) {
+            console.log('Le bot joue');
+        }
+
+        if (!playerLoading && resultLiarAction.players) {
+            for (let i = 0; i < players['hydra:member'].length; i++) {
+                if (players['hydra:member'][i].bot) {
+                    players['hydra:member'][i] = {
+                        ...players['hydra:member'][i],
+                        dices: resultLiarAction.players[i].dices
+                    }
+                }
+            }
+        }
+
+        if (!playerLoading && !resultLiarAction.players) {
+            for (let i = 0; i < players['hydra:member'].length; i++) {
+                if (players['hydra:member'][i].bot) {
+                    players['hydra:member'][i] = {
+                        ...players['hydra:member'][i],
+                        dices: []
+                    }
+                }
+            }
+        }
+    }, [betsList, currentPlayer, looser, resultLiarAction, players])
+
     return <div>
         <BetsListProvider value={{betsList, addBet}}>
             <CurrentPlayerProvider value={{currentPlayer, selectCurrentPlayer}}>
+                {looser && <div>Le joueur {currentPlayer.pseudo} a dit menteur a {betsList[betsList.length - 1].player.pseudo} !<br /> Le perdant est {looser.pseudo}, il perd donc une vie. <br /> Le prochain tour commence dans 10 secondes !</div>}
                 <div className="game-board-player-list">
-                    {!loading && !error && game.players.map(player => <Player key={player.id} player={player} game={game} isCurrentPlayer={player.id===currentPlayer.id}/>)}
+                    {!loading && !playerLoading && !error && players['hydra:member'].map(player => <Player key={player.id} player={player} game={game} isCurrentPlayer={player.id===currentPlayer.id} setResultLiarAction={setResultLiarAction} resultLiarAction={resultLiarAction} looser={looser} setLooser={setLooser}/>)}
                 </div>
                 <div>
-                    {!loading && !error && <BetList game={game}/>}
+                    {!loading && !playerLoading && !error && <BetList game={game}/>}
                 </div>
                 <Snackbar open={error}>
                     <Alert severity="error">

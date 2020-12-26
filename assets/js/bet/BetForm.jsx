@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-export default function BetForm ({game, player, isCurrentPlayer}) {
+export default function BetForm ({game, player, isCurrentPlayer, resetDiceValue}) {
   const { betsList, addBet } = useContext(BetsListContext);
   const { selectCurrentPlayer } = useContext(CurrentPlayerContext);
   const classes = useStyles();
@@ -35,29 +35,25 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
   const [diceNumberOptions, setDiceNumberOptions] = useState([]);
   const [diceValueOptions, setDiceValueOptions] = useState([]);
   const [error, setError] = useState(null);
-
-  const {
-    response: lastBet,
-    loading,
-  } = useFetch("/api/bets?game={game.id}&itemsPerPage=1&order[id]=desc");
+  const [lastBet, setLastBet] = useState(null);
 
   useEffect(() => {
+      if (betsList) {
+        setLastBet(betsList[betsList.length - 1]);
+      }
       loadDiceNumberPossibility(game, lastBet);
-      loadDiceValuePossibility(game, lastBet)
+      loadDiceValuePossibility(game, lastBet);
     },
-    [loading]
+    [betsList, resetDiceValue, lastBet]
   )
 
   const loadDiceNumberPossibility = async (game, lastBet) => {
-    if (loading) {
-      return;
-    }
     let diceNumber = getDiceNumberOnGame(game)
     let startDiceNumber = 1;
     let startDiceValue = 1;
-    if (lastBet["hydra:member"].length > 0) {
-      startDiceNumber = lastBet["hydra:member"][0].diceNumber;
-      startDiceValue = lastBet["hydra:member"][0].diceValue;
+    if (lastBet) {
+      startDiceNumber = lastBet.diceNumber;
+      startDiceValue = lastBet.diceValue;
     }
     let result = [];
 
@@ -73,12 +69,9 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
   };
 
   const loadDiceValuePossibility = async (game, lastBet) => {
-    if (loading) {
-      return;
-    }
     let lastBetDiceValue = 0;
-    if (lastBet["hydra:member"].length > 0) {
-      lastBetDiceValue = lastBet["hydra:member"][0].diceValue;
+    if (lastBet) {
+      lastBetDiceValue = lastBet.diceValue;
     }
 
     if (lastBetDiceValue === 6) {
@@ -90,8 +83,8 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
   };
 
   const onChangeDiceNumber = async (event, lastBet) => {
-    let lastBetDiceNumber = lastBet["hydra:member"][0].diceNumber;
-    let lastBetDiceValue = lastBet["hydra:member"][0].diceValue;
+    let lastBetDiceNumber = lastBet.diceNumber;
+    let lastBetDiceValue = lastBet.diceValue;
 
     setDiceNumber(event.target.value);
     setDiceValue(event.target.value <= lastBetDiceNumber ? lastBetDiceValue + 1: 1)
@@ -123,7 +116,7 @@ export default function BetForm ({game, player, isCurrentPlayer}) {
       loadDiceNumberPossibility(game, {"hydra:member" : [fetchResponse]});
       loadDiceValuePossibility(game, {"hydra:member" : [fetchResponse]});
       addBet([...betsList, fetchResponse]);
-      fetchApi("/api/players?game={game.id}&myTurn=true", {}, selectCurrentPlayer, true);
+      fetchApi("/api/players?game=" + game.id + "&myTurn=true", {}, selectCurrentPlayer, true);
     } catch (e) {
       setError(e);
     }

@@ -2,7 +2,7 @@
 Feature:
   In order to play a game
   As a User
-  I want to see the game page
+  I want to be able to bet
 
   @read-only
   Scenario: As a User I want to see bets list of my game

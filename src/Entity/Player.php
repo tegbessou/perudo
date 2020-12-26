@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\Api\PlayerTellLiarAction;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,10 +16,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity
  * @ApiResource(
  *     attributes={
- *         "normalization_context"={"groups"={"game:read", "player:read"}}
+ *         "normalization_context"={"groups"={"game:read", "player:read", "player:read_if_not_bot"}}
  *     },
  *     collectionOperations={
- *         "get"
+ *         "get",
+ *         "tell_liar"={
+ *             "method"="POST",
+ *             "path"="/players/{id}/tell_liar",
+ *             "controller"=PlayerTellLiarAction::class,
+ *         }
  *     },
  *     itemOperations={
  *         "get"
@@ -77,7 +83,7 @@ class Player
     /**
      * @ORM\Column(name="dices", type="array")
      *
-     * @Groups({"game:read", "player:read"})
+     * @Groups({"player:read_if_not_bot"})
      */
     private array $dices;
 
